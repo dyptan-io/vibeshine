@@ -4,6 +4,12 @@ permissions: {}
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - vibe
+  pull_request:
+    branches:
+      - vibe
 
 concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}"
@@ -40,6 +46,7 @@ jobs:
 
   build-docker:
     name: Docker
+    if: false  # disabled: non-windows build
     needs: release-setup
     permissions:
       contents: read
@@ -61,6 +68,7 @@ jobs:
 
   build-freebsd:
     name: FreeBSD
+    if: false
     needs: release-setup
     permissions:
       contents: read
@@ -71,6 +79,7 @@ jobs:
 
   build-homebrew:
     name: Homebrew
+    if: false
     needs: release-setup
     permissions:
       contents: read
@@ -87,6 +96,7 @@ jobs:
 
   build-linux:
     name: Linux
+    if: false
     needs: release-setup
     permissions:
       contents: read
@@ -97,6 +107,7 @@ jobs:
 
   build-archlinux:
     name: Archlinux
+    if: false
     needs: release-setup
     permissions:
       contents: read
@@ -107,7 +118,7 @@ jobs:
 
   build-linux-copr:
     name: Linux Copr
-    if: github.event_name != 'push'  # releases are handled directly in ci-copr.yml
+    if: false
     needs: release-setup
     permissions:
       contents: write  # needed to update releases
@@ -119,6 +130,7 @@ jobs:
 
   build-linux-flatpak:
     name: Linux Flatpak
+    if: false  # disabled: non-windows build
     needs: release-setup
     permissions:
       contents: read
@@ -139,6 +151,7 @@ jobs:
 
   bundle-analysis:
     name: Bundle Analysis
+    if: false  # disabled: not required for windows msi build
     needs: release-setup
     permissions:
       contents: read
@@ -149,6 +162,7 @@ jobs:
   coverage:
     name: Coverage-${{ matrix.name }}
     if: >-
+      false &&
       always() &&
       !cancelled() &&
       startsWith(github.repository, 'LizardByte/')
@@ -245,7 +259,8 @@ jobs:
 
   release:
     name: Release
-    if:
+    if: >-
+      false &&
       needs.release-setup.outputs.publish_release == 'true' &&
       startsWith(github.repository, 'LizardByte/')
     needs:
@@ -285,7 +300,8 @@ jobs:
 
   release-homebrew-beta:
     name: Release Homebrew Beta
-    if:
+    if: >-
+      false &&
       needs.release-setup.outputs.publish_release == 'true' &&
       startsWith(github.repository, 'LizardByte/')
     needs:

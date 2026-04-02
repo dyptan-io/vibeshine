@@ -43,7 +43,6 @@ set(SUDOVDA_DRIVER_FILES
     "${SUDOVDA_SOURCE_DIR}/SudoVDA.inf"
     "${SUDOVDA_SOURCE_DIR}/SudoVDA.dll"
     "${SUDOVDA_SOURCE_DIR}/sudovda.cat"
-    "${SUDOVDA_SOURCE_DIR}/sudovda.cer"
     "${SUDOVDA_SOURCE_DIR}/nefconc.exe"
 )
 
