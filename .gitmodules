@@ -73,3 +73,6 @@
 [submodule "third-party/depot_tools"]
 	path = third-party/depot_tools
 	url = https://chromium.googlesource.com/chromium/tools/depot_tools.git
+[submodule "third-party/Virtual-Display-Driver"]
+	path = third-party/Virtual-Display-Driver
+	url = https://github.com/VirtualDrivers/Virtual-Display-Driver.git

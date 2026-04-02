@@ -184,6 +184,43 @@ jobs:
           echo "python-path=${python_path}"
           echo "python-path=${python_path}" >> "${GITHUB_OUTPUT}"
 
+      - name: Collect Virtual Display Driver artifacts
+        shell: pwsh
+        env:
+          MATRIX_ARCH: ${{ matrix.arch }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $destDir = 'src_assets\windows\drivers\sudovda'
+
+          # Download pre-built VDD release (already signed)
+          $vddRelease = Invoke-RestMethod 'https://api.github.com/repos/VirtualDrivers/Virtual-Display-Driver/releases/latest'
+          $zipName    = if ($env:MATRIX_ARCH -eq 'x86_64') { '*x86*' } else { '*ARM64*' }
+          $vddZipUrl  = ($vddRelease.assets | Where-Object { $_.name -like $zipName } |
+            Select-Object -First 1).browser_download_url
+          Invoke-WebRequest -Uri $vddZipUrl -OutFile 'vdd.zip'
+          Expand-Archive 'vdd.zip' -DestinationPath 'vdd_tmp' -Force
+          $vddDir = Get-ChildItem 'vdd_tmp' -Directory | Select-Object -First 1
+
+          Copy-Item "$($vddDir.FullName)\MttVDD.inf"  "$destDir\SudoVDA.inf"  -Force
+          Copy-Item "$($vddDir.FullName)\MttVDD.dll"  "$destDir\SudoVDA.dll"  -Force
+          Copy-Item "$($vddDir.FullName)\mttvdd.cat"  "$destDir\sudovda.cat"  -Force
+          Remove-Item 'vdd.zip','vdd_tmp' -Recurse -Force
+
+          # Download nefconc.exe from nefarius/nefcon latest release
+          $nefconRelease = Invoke-RestMethod 'https://api.github.com/repos/nefarius/nefcon/releases/latest'
+          $nefconZipUrl  = ($nefconRelease.assets | Where-Object { $_.name -like '*.zip' } |
+            Select-Object -First 1).browser_download_url
+          Invoke-WebRequest -Uri $nefconZipUrl -OutFile 'nefcon.zip'
+          Expand-Archive 'nefcon.zip' -DestinationPath 'nefcon_tmp' -Force
+          $nefconcExe = Get-ChildItem 'nefcon_tmp' -Recurse -Filter 'nefconc.exe' | Select-Object -First 1
+          if (-not $nefconcExe) { throw 'nefconc.exe not found in nefcon release zip' }
+          Copy-Item $nefconcExe.FullName "$destDir\nefconc.exe" -Force
+          Remove-Item 'nefcon.zip','nefcon_tmp' -Recurse -Force
+
+          # Create uninstall.bat
+          "@echo off`r`npowershell.exe -NoProfile -ExecutionPolicy Bypass -File `"%~dp0install.ps1`" -Uninstall" |
+            Set-Content "$destDir\uninstall.bat" -Encoding ASCII
+
       - name: Build Windows
         shell: msys2 {0}
         env:

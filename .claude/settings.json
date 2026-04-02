@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /Users/diptanw/Sources/misc/vibeshine show ec71d228 --name-only)",
+      "Bash(curl -s \"https://api.github.com/repos/diptanw/vibeshine/releases\")",
+      "Bash(python3 -c \"import sys,json; rs=json.load\\(sys.stdin\\); print\\(len\\(rs\\) if isinstance\\(rs,list\\) else rs\\)\")",
+      "Bash(python3 -c \"import sys,json; r=json.load\\(sys.stdin\\); [print\\(a['name'], a['browser_download_url']\\) for a in r.get\\('assets',[]\\)]\")",
+      "Bash(git -C /Users/diptanw/Sources/misc/vibeshine log --all --diff-filter=A -- \"src_assets/windows/drivers/sudovda/*\")",
+      "Bash(git -C /Users/diptanw/Sources/misc/vibeshine show d1eec7e8 --name-status)",
+      "Bash(curl -s \"https://api.github.com/users/Nonary/repos?type=all&per_page=100\")",
+      "Bash(python3 -c \"import sys,json; repos=json.load\\(sys.stdin\\); [print\\(r['name'], r['html_url']\\) for r in repos if 'sudo' in r['name'].lower\\(\\) or 'vda' in r['name'].lower\\(\\) or 'display' in r['name'].lower\\(\\) or 'driver' in r['name'].lower\\(\\)]\")"
+    ]
+  }
+}
